@@ -1,0 +1,27 @@
+
+# https://hub.docker.com/r/linuxserver/transmission
+
+version: "2.1"
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      # - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+      - USER=mattia #optional
+      - PASS=QGJ2mur9fkc2pcq.vze #optional
+      # - WHITELIST=iplist #optional
+      # - PEERPORT=peerport #optional
+      # - HOST_WHITELIST=dnsname list #optional
+    volumes:
+      - .data:/config
+      - ../shared:/downloads 
+      - .watch:/watch
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
