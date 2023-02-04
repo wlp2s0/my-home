@@ -11,8 +11,8 @@ services:
       - PGID=1000
       - TZ=Europe/London
       # - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
-      - USER=mattia #optional
-      - PASS=QGJ2mur9fkc2pcq.vze #optional
+      - USER=changeme #optional
+      - PASS=changeme #optional
       # - WHITELIST=iplist #optional
       # - PEERPORT=peerport #optional
       # - HOST_WHITELIST=dnsname list #optional
