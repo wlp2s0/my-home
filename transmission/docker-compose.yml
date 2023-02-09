@@ -11,8 +11,8 @@ services:
       - PGID=1000
       - TZ=Europe/London
       # - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
-      - USER=changeme #optional
-      - PASS=changeme #optional
+      - USER=mattia #optional
+      - PASS=folletto #optional
       # - WHITELIST=iplist #optional
       # - PEERPORT=peerport #optional
       # - HOST_WHITELIST=dnsname list #optional
@@ -25,3 +25,15 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.rule=Host(`torrent.mattiacampagna.com`)"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.transmission.tls.certresolver=myresolver"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

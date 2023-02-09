@@ -7,14 +7,28 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
-      - JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
+      - TZ=Europe/Rome
+      - JELLYFIN_PublishedServerUrl=streaming.mattiacampagna.com #optional
     volumes:
       - ./config:/config
       - ../shared/tvseries:/data/tvshows
       - ../shared/movies:/data/movies
     ports:
       - 8096:8096
-      - 8920:8920 #optional
-      - 7359:7359/udp #optional
+      # - 8920:8920 #optional
+      # - 7359:7359/udp #optional
       # - 1900:1900/udp #optional
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`streaming.mattiacampagna.com`)"
+      - "traefik.http.routers.jellyfin.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.jellyfin.tls.certresolver=myresolver"
+      # - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+

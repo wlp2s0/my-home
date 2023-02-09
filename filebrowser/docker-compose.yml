@@ -1,8 +1,9 @@
-version: "3.6"
+version: "3"
 
 services:
   filebrowser:
-    image: filebrowser/filebrowser
+    build: .
+    # image: filebrowser/filebrowser
     ports:
       - 9001:80
     environment:
@@ -10,4 +11,16 @@ services:
       - PGID=1000
     volumes:
       - ../shared:/srv
-      - ./filebrowser.db:/database/filebrowser.db
+      - ./database:/database
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.filebrowser.rule=Host(`files.mattiacampagna.com`)"
+      - "traefik.http.routers.filebrowser.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.filebrowser.tls.certresolver=myresolver"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true

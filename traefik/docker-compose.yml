@@ -1,18 +1,49 @@
-version: "3"
+version: "3.3"
 
 services:
   traefik:
-    container_name: traefik
-    image: traefik:alpine
-    restart: always
+    build: .
+    # image: "traefik"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      # Activate dashboard
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # Traefik will listen to incoming request on the port 80 (http)
+      - "--entrypoints.web.address=:80"
+      # Traefik will listen to incoming request on the port 443 (https)
+      - "--entrypoints.websecure.address=:443"
+      # Enable a http challenge named "myresolver"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      # Tell it to use our predefined entrypoint named "web"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      # The email to provide to let's encrypt
+      - "--certificatesresolvers.myresolver.acme.email=me@mattiacampagna.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      # Create a letsencrypt dir within the folder where the docker-compose file is
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - traefik
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./acme/acme.json:/acme.json
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.mattiacampagna.com`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+    networks:
+      - traefik
 
 networks:
   traefik:

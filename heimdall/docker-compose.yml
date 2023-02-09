@@ -9,8 +9,18 @@ services:
       - PGID=1000
       - TZ=Europe/London
     volumes:
-      - /path/to/appdata/config:/config
-    ports:
-      - 80:80
-      - 443:443
+      - ./config:/config
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.heimdall.rule=Host(`heimdall.mattiacampagna.com`)"
+      - "traefik.http.routers.heimdall.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.heimdall.tls.certresolver=myresolver"
+      - "traefik.http.services.heimdall.loadbalancer.server.port=80"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
