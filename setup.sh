@@ -35,7 +35,7 @@
 mkdir -p traefik/letsencrypt
 touch traefik/letsencrypt/acme.json
 chmod 600 traefik/letsencrypt/acme.json
-## jellyfin 
+## jellyfin shared folders 
 mkdir -p shared/movies
 mkdir -p shared/tvseries
 ## filebrowser
@@ -43,7 +43,7 @@ mkdir -p filebrowser/database
 touch filebrowser/database/filebrowser.db
 
 # Start all services
-declare -a services=("traefik" "jellyfin" "transmission" "filebrowser")
+declare -a services=("traefik" "heimdall" "jellyfin" "nextcloud" "transmission" "filebrowser")
 
 for service in "${services[@]}"
 do
