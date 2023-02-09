@@ -30,18 +30,18 @@
  sudo systemctl enable docker
  docker network create traefik
 
- # Create directories
+# Create directories
  mkdir -p shared/movies
  mkdir -p shared/tvseries
 
 # Start all services
-#declare -a services=("traefik" "heimdall" "homeassistant" "jellyfin" "nextcloud")
+declare -a services=("traefik" "heimdall" "homeassistant" "jellyfin" "nextcloud")
 
-#for service in "${services[@]}"
-#do
+for service in "${services[@]}"
+do
 
-#  cd "$service"
-#  docker compose up -d
-#  cd .. 
+ cd "$service"
+ docker compose up -d
+ cd .. 
 
-#done
+done
