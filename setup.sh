@@ -35,7 +35,7 @@
  mkdir -p shared/tvseries
 
 # Start all services
-declare -a services=("traefik" "heimdall" "homeassistant" "jellyfin" "nextcloud")
+declare -a services=("traefik" "heimdall" "jellyfin" "nextcloud" "transmission" "filebrowser")
 
 for service in "${services[@]}"
 do
