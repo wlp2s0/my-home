@@ -10,25 +10,15 @@ services:
       MYSQL_USER: nextcloud
       MYSQL_PASSWORD: folletto
       MYSQL_HOST: db
-      # VIRTUAL_HOST: https://cloud.mattiacampagna.com
       OVERWRITEPROTOCOL: https
     networks:
       - traefik
       - dbnet
-    # ports:
-    #  - "8087:80"
     links:
       - db
     volumes:
       - nextcloud:/var/www/html
     labels:
-      # - traefik.enable=true
-      # - traefik.port=80
-      # - traefik.frontend.rule=Host:cloud.your-domain.tld
-      # - traefik.docker.network=traefik_srv
-      # - traefik.frontend.entryPoints=https
-      # - traefik.frontend.headers.STSSeconds=315360000
-      # - traefik.frontend.headers.referrerPolicy=no-referrer
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.rule=Host(`cloud.mattiacampagna.com`)"
       - "traefik.http.routers.nextcloud.entrypoints=websecure"
