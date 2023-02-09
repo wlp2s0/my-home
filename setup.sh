@@ -31,11 +31,15 @@
  docker network create traefik
 
 # Create directories
- mkdir -p shared/movies
- mkdir -p shared/tvseries
+## jellyfin 
+mkdir -p shared/movies
+mkdir -p shared/tvseries
+## filebrowser
+mkdir -p /database
+touch /database/filebrowser.db
 
 # Start all services
-declare -a services=("traefik" "heimdall" "jellyfin" "nextcloud" "transmission" "filebrowser")
+declare -a services=("traefik" "jellyfin" "transmission" "filebrowser")
 
 for service in "${services[@]}"
 do
