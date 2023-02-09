@@ -11,6 +11,7 @@ services:
     volumes:
       - ../shared:/srv
       - ./database:/database
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.filebrowser.rule=Host(`files.mattiacampagna.com`)"

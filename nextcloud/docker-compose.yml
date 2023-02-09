@@ -18,6 +18,7 @@ services:
       - db
     volumes:
       - nextcloud:/var/www/html
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.rule=Host(`cloud.mattiacampagna.com`)"
