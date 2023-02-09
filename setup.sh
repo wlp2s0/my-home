@@ -31,12 +31,16 @@
  docker network create traefik
 
 # Create directories
+## traeafik
+mkdir -p traefik/letsencrypt
+touch traefik/letsencrypt/acme.json
+chmod 600 traefik/letsencrypt/acme.json
 ## jellyfin 
 mkdir -p shared/movies
 mkdir -p shared/tvseries
 ## filebrowser
-mkdir -p /database
-touch /database/filebrowser.db
+mkdir -p filebrowser/database
+touch filebrowser/database/filebrowser.db
 
 # Start all services
 declare -a services=("traefik" "jellyfin" "transmission" "filebrowser")

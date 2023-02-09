@@ -2,7 +2,6 @@ version: "3.3"
 
 services:
   traefik:
-    build: .
     image: "traefik"
     restart: unless-stopped
     command:
