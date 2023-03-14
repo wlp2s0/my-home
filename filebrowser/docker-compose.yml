@@ -1,26 +1,47 @@
-version: "3"
+version: "3.9"
 
 services:
   filebrowser:
     image: filebrowser/filebrowser
-    # ports:
-    #   - 9001:80
-    environment:
-      - PUID=1000
-      - PGID=1000
+    env_file: .env
     volumes:
       - ../shared:/srv
       - ./database:/database
+      - ./settings.json:/.filebrowser.json
     restart: unless-stopped
     labels:
+      # Inform Traefik to expose this service
       - "traefik.enable=true"
+      # Match rule for this service
       - "traefik.http.routers.filebrowser.rule=Host(`files.mattiacampagna.com`)"
+      # Specify that this service must be reachable only from websecure entrypoint (https)
       - "traefik.http.routers.filebrowser.entrypoints=websecure"
       # Uses the Host rule to define which certificate to issue
       - "traefik.http.routers.filebrowser.tls.certresolver=myresolver"
+      # Internal container port
       - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
+      # Inform the backup service to stop this service during backup
+      - docker-volume-backup.stop-during-backup=true
     networks:
       - traefik
+
+  # backup:
+  #   image: offen/docker-volume-backup
+  #   restart: unless-stopped
+  #   environment:
+  #     PUID: 1000
+  #     PGID: 1000
+  #     BACKUP_CRON_EXPRESSION: "*/1 * * * *"
+  #     NOTIFICATION_LEVEL: "info"
+  #     NOTIFICATION_URLS: telegram://6141937258:AAEFQ3YXIkWl-bLKl1sNgtGI2JfDsgdEJtE@telegram?chats=527653323&preview=No
+  #     SSH_HOST_NAME: "192.168.0.120"
+  #     SSH_USER: "servtel"
+  #     SSH_PASSWORD: "webprovvisoriocom"
+  #     SSH_REMOTE_PATH: "/home/servtel/my-home/filebrowser/backup"
+  #   volumes:
+  #     - ./database:/backup/my-app-backup:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+
 
 networks:
   traefik:
