@@ -27,6 +27,8 @@ services:
       - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
       - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
       - "traefik.docker.network=traefik"
+
+      - docker-volume-backup.stop-during-backup=true
       
   db:
     image: mariadb
@@ -41,6 +43,28 @@ services:
       - MYSQL_PASSWORD=folletto
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
+    labels: 
+      - docker-volume-backup.stop-during-backup=true
+
+
+  # backup:
+  #   image: offen/docker-volume-backup
+  #   restart: unless-stopped
+  #   environment:
+  #     PUID: 1000
+  #     PGID: 1000
+  #     BACKUP_CRON_EXPRESSION: "*/1 * * * *"
+  #     NOTIFICATION_LEVEL: "info"
+  #     NOTIFICATION_URLS: telegram://6141937258:AAEFQ3YXIkWl-bLKl1sNgtGI2JfDsgdEJtE@telegram?chats=527653323&preview=No
+  #     SSH_HOST_NAME: "192.168.0.120"
+  #     SSH_USER: "servtel"
+  #     SSH_PASSWORD: "webprovvisoriocom"
+  #     SSH_REMOTE_PATH: "/home/servtel/my-home/nextcloud/backup"
+  #   volumes:
+  #     - nextcloud:/backup/nextcloud-backup:ro
+  #     - db:/backup/db-backup:ro
+  #     - ./notifications:/etc/dockervolumebackup/notifications.d/
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes:
    nextcloud:
