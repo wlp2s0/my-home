@@ -21,4 +21,7 @@ transmission/*
 homeassistant/*
 !homeassistant/docker-compose.yml
 
+pihole/*
+!pihole/docker-compose.yml
+
 shared/*
