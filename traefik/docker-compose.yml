@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.9"
 
 services:
   traefik:
@@ -8,7 +8,9 @@ services:
       - "--log.level=DEBUG"
       # Activate dashboard
       - "--api.insecure=true"
+      # Activate docker module
       - "--providers.docker=true"
+      # Tell to don't exposy by default any service
       - "--providers.docker.exposedbydefault=false"
       # Traefik will listen to incoming request on the port 80 (http)
       - "--entrypoints.web.address=:80"
@@ -20,7 +22,11 @@ services:
       - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
       # The email to provide to let's encrypt
       - "--certificatesresolvers.myresolver.acme.email=me@mattiacampagna.com"
+      # Tell to store the certificate on a path under our volume
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Global redirect to websecure entrypoint (https)
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
     ports:
       - "80:80"
       - "443:443"
@@ -28,7 +34,12 @@ services:
     volumes:
       # Create a letsencrypt dir within the folder where the docker-compose file is
       - "./letsencrypt:/letsencrypt"
+      # Share your Docker host socket with a volume at /var/run/docker.sock
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    # Redirect to https
+    # labels:
+    #   - "traefik.http.middlewares.test-redirectscheme.redirectscheme.scheme=https"
+    #   - "traefik.http.middlewares.test-redirectscheme.redirectscheme.permanent=true"
     networks:
       - traefik
 
