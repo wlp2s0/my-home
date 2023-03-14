@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  handbrake:
+    image: jlesage/handbrake
+    ports:
+      - "5800:5800"
+    environment:
+      - DARK_MODE 1
+    volumes:
+      # This is where the application stores its configuration, states, log and any files needing persistency.
+      - "./config:/config"
+      # This location contains files from your host that need to be accessible to the application.
+      - "/home/mattia:/storage:ro"
+      # This is where videos to be automatically converted are located
+      - "./watch:/watch"
+      # This is where automatically converted video files are written
+      - "./output:/output"
