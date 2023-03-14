@@ -4,16 +4,18 @@ services:
   jellyfin:
     image: lscr.io/linuxserver/jellyfin
     restart: unless-stopped
+    # group_add:
+      # - "104"
+      # - "44"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Rome
-      - JELLYFIN_PublishedServerUrl=streaming.mattiacampagna.com #optional
+      - JELLYFIN_PublishedServerUrl=streaming.mattiacampagna.com
     volumes:
       - ./config:/config
       - ../shared/tvseries:/data/tvshows
       - ../shared/movies:/data/movies
-
     # ports:
       # - 8096:8096
       # - 8920:8920 #optional
@@ -21,13 +23,17 @@ services:
       # - 1900:1900/udp #optional
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(`streaming.mattiacampagna.com`)"
+      - "traefik.http.routers.jellyfin.rule=Host(`streaming2.mattiacampagna.com`)"
       - "traefik.http.routers.jellyfin.entrypoints=websecure"
       # Uses the Host rule to define which certificate to issue
       - "traefik.http.routers.jellyfin.tls.certresolver=myresolver"
       - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
     networks:
       - traefik
+    # devices:
+      # # VAAPI Devices (examples)
+      # - /dev/dri/renderD128:/dev/dri/renderD128
+      # - /dev/dri/card0:/dev/dri/card0
 
 networks:
   traefik:
