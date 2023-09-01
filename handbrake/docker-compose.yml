@@ -2,10 +2,7 @@ version: '3.9'
 services:
   handbrake:
     image: jlesage/handbrake
-    ports:
-      - "5800:5800"
-    environment:
-      - DARK_MODE 1
+    env_file: .env
     volumes:
       # This is where the application stores its configuration, states, log and any files needing persistency.
       - "./config:/config"
@@ -15,3 +12,17 @@ services:
       - "./watch:/watch"
       # This is where automatically converted video files are written
       - "./output:/output"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake.rule=Host(`handbrake.mattiacampagna.com`)"
+      - "traefik.http.routers.handbrake.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.handbrake.tls.certresolver=myresolver"
+      - "traefik.http.services.handbrake.loadbalancer.server.port=5800"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
