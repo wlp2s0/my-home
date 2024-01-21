@@ -36,10 +36,10 @@ services:
       - "./letsencrypt:/letsencrypt"
       # Share your Docker host socket with a volume at /var/run/docker.sock
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    # Redirect to https
-    # labels:
-    #   - "traefik.http.middlewares.test-redirectscheme.redirectscheme.scheme=https"
-    #   - "traefik.http.middlewares.test-redirectscheme.redirectscheme.permanent=true"
+    labels:
+      # Redirect to https
+      # - "traefik.http.middlewares.test-redirectscheme.redirectscheme.scheme=https"
+      # - "traefik.http.middlewares.test-redirectscheme.redirectscheme.permanent=true"
     networks:
       - traefik
 
