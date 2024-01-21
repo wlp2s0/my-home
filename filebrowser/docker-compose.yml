@@ -3,7 +3,8 @@ version: "3.9"
 services:
   filebrowser:
     image: filebrowser/filebrowser
-    env_file: .env
+    # env_file: .env
+    env_file: ../env-files/.filebrowser
     volumes:
       - ../shared:/srv
       - ./database:/database

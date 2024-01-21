@@ -2,7 +2,7 @@ version: '3.9'
 services:
   handbrake:
     image: jlesage/handbrake
-    env_file: .env
+    env_file: ../env-files/.handbrake
     volumes:
       # This is where the application stores its configuration, states, log and any files needing persistency.
       - "./config:/config"

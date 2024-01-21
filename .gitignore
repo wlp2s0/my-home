@@ -24,4 +24,8 @@ homeassistant/*
 pihole/*
 !pihole/docker-compose.yml
 
+handbrake/*
+!handbrake/docker-compose.yml
+
 shared/*
+env-files/*
