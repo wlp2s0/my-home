@@ -11,6 +11,8 @@ services:
       MYSQL_PASSWORD: folletto
       MYSQL_HOST: db
       OVERWRITEPROTOCOL: https
+      TRUSTED_PROXIES: 172.17.0.0/16
+      OVERWRITEHOST: cloud.mattiacampagna.com
     networks:
       - traefik
       - dbnet
@@ -27,6 +29,16 @@ services:
       - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
       - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
       - "traefik.docker.network=traefik"
+      # Use the HSTS middleware (reference: https://docs.nextcloud.com/server/25/admin_manual/configuration_server/reverse_proxy_configuration.html)
+      - "traefik.http.middlewares.hstsHeader.headers.stsSeconds=15552000"
+      - "traefik.http.middlewares.hstsHeader.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.hstsHeader.headers.stsPreload=true"
+      - "traefik.http.middlewares.hstsHeader.headers.forceSTSHeader=true"
+      # Caldav regex (reference)
+      - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.permanent=true"
+      - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.regex='https://(.*)/.well-known/(?:card|cal)dav'"
+      - "traefik.http.middlewares.nextcloud_redirectregex.redirectregex.replacement='https://$${1}/remote.php/dav'"
+      - "traefik.http.routers.nextcloud.middlewares=hstsHeader,nextcloud_redirectregex"
 
       - docker-volume-backup.stop-during-backup=true
       
@@ -45,7 +57,6 @@ services:
       - MYSQL_USER=nextcloud
     labels: 
       - docker-volume-backup.stop-during-backup=true
-
 
   # backup:
   #   image: offen/docker-volume-backup
