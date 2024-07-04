@@ -1,4 +1,4 @@
-version: "3"
+version: "3.9"
 services:
   homeassistant:
     image: lscr.io/linuxserver/homeassistant
@@ -7,10 +7,25 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ=Europe/Rome
     volumes:
       - ./config:/config
-    ports:
-      - 8123:8123 #optional
-    # devices:
-    #   - /path/to/device:/path/to/device #optional
+    #ports:
+    #  - 8123:8123 #optional
+    labels:
+      # Inform Traefik to expose this service
+      - "traefik.enable=true"
+      # Match rule for this service
+      - "traefik.http.routers.homeassistant.rule=Host(`home.mattiacampagna.com`)"
+      # Specify that this service must be reachable only from websecure entrypoint (https)
+      - "traefik.http.routers.homeassistant.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.homeassistant.tls.certresolver=myresolver"
+      # Internal container port
+      - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"
+    networks:
+      - traefik
+      
+networks:
+  traefik:
+    external: true

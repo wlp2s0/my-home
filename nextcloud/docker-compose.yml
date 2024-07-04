@@ -4,7 +4,6 @@ services:
   nextcloud:
     image: nextcloud
     hostname: cloud.mattiacampagna.com
-    restart: always
     environment:
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
