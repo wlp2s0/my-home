@@ -85,10 +85,10 @@ services:
     environment:
       extra_params: "--o:ssl.enable=false  --o:ssl.termination=true"
       server_name: collabora.mattiacampagna.com
-      domain: mattiacampagna\\.com
+      domain: mattiacampagna\.com
     extra_hosts:
-      - "cloud.mattiacampagna.com:185.63.52.108"
-      - "collabora.mattiacampagna.com:185.63.52.108"    
+      - "cloud.mattiacampagna.com:217.198.137.152"
+      - "collabora.mattiacampagna.com:217.198.137.152"    
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.collabora.rule=Host(`collabora.mattiacampagna.com`)"
