@@ -27,5 +27,11 @@ pihole/*
 handbrake/*
 !handbrake/docker-compose.yml
 
+immich/*
+!immich/docker-compose.yml
+
+prowlarr
+!prowlarr/docker-compose.yml
+
 shared/*
 env-files/*

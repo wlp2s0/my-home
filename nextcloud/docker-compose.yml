@@ -19,7 +19,6 @@ services:
       - db
     volumes:
       - nextcloud:/var/www/html
-    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.rule=Host(`cloud.mattiacampagna.com`)"
@@ -40,6 +39,27 @@ services:
       - "traefik.http.routers.nextcloud.middlewares=hstsHeader,nextcloud_redirectregex"
 
       - docker-volume-backup.stop-during-backup=true
+
+  nextcloud-cron:
+    image: nextcloud
+    hostname: cloud.mattiacampagna.com
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: folletto
+      MYSQL_HOST: db
+      OVERWRITEPROTOCOL: https
+      TRUSTED_PROXIES: 172.17.0.0/16
+      OVERWRITEHOST: cloud.mattiacampagna.com
+    entrypoint: /cron.sh
+    networks:
+      - traefik
+      - dbnet
+    links:
+      - db
+    volumes:
+      - nextcloud:/var/www/html
       
   db:
     image: mariadb
@@ -56,6 +76,27 @@ services:
       - MYSQL_USER=nextcloud
     labels: 
       - docker-volume-backup.stop-during-backup=true
+
+  collabora-code:
+    image: collabora/code
+    networks:
+      - dbnet
+      - traefik
+    environment:
+      extra_params: "--o:ssl.enable=false  --o:ssl.termination=true"
+      server_name: collabora.mattiacampagna.com
+      domain: mattiacampagna\\.com
+    extra_hosts:
+      - "cloud.mattiacampagna.com:185.63.52.108"
+      - "collabora.mattiacampagna.com:185.63.52.108"    
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.collabora.rule=Host(`collabora.mattiacampagna.com`)"
+      - "traefik.http.routers.collabora.entrypoints=websecure"
+      # Uses the Host rule to define which certificate to issue
+      - "traefik.http.routers.collabora.tls.certresolver=myresolver"
+      - "traefik.http.services.collabora.loadbalancer.server.port=9980"
+      - "traefik.docker.network=traefik"
 
   # backup:
   #   image: offen/docker-volume-backup

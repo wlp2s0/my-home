@@ -43,7 +43,6 @@ services:
   #     - ./database:/backup/my-app-backup:ro
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
 
-
 networks:
   traefik:
     external: true
